@@ -1,3 +1,3 @@
-# remi
+# Remi
 
-A new Flutter project.
+Balatro clone of a card game my family plays
