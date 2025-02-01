@@ -10,7 +10,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  int curr = 13;
+  int cardsUsed = 13;
   final deck = [
     PlayingCard("assets/club/cardClubs_A.png", 1, Suit.club),
     PlayingCard("assets/club/cardClubs_2.png", 2, Suit.club),
@@ -68,18 +68,86 @@ class _GameScreenState extends State<GameScreen> {
   final deckSize = 52;
   late List<PlayingCard> hand;
   final handSize = 13;
+  int points = 0;
   late Random random;
   int round = 1;
-  int score = 0;
   int seed = DateTime.now().microsecondsSinceEpoch;
   Set<PlayingCard> selected = {};
-  bool sortBySuit = false;
+  bool sortedBySuit = false;
 
-  // bool isValidHand() {
-  //   List<Set<PlayingCard>> seq3, seq4, set3, set4;
+  bool isValidHand() {
+    Map<Set<PlayingCard>, bool> threes = {}, fours = {};
+    List<PlayingCard> temp = List.from(hand);
 
-  //   return false;
-  // }
+    temp.sort((a, b) => a.rank.compareTo(b.rank));
+
+    // 3 set
+    for( int i = 0; i < 10; i++ ) {
+      if( temp[i].rank == temp[i + 1].rank && temp[i].rank == temp[i + 2].rank ) {
+        threes[ { temp[i], temp[i + 1], temp[i +2] } ] = false;
+      }
+    }
+
+    // 4 set
+    for( int i = 0; i < 9; i++ ) {
+      if( temp[i].rank == temp[i + 1].rank && temp[i].rank == temp[i + 2].rank && temp[i].rank == temp[i + 3].rank ) {
+        fours[ { temp[i], temp[i + 1], temp[i +2], temp[i + 3] } ] = false;
+        i += 4;
+      }
+    }
+
+    temp.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+
+    // 3 seq
+    for( int i = 0; i < 10; i++ ) {
+      if( ( temp[i].suit == temp[i + 1].suit && temp[i].suit == temp[i + 2].suit ) &&
+          ( temp[i].rank + 1 == temp[i + 1].rank && temp[i].rank + 2 == temp[i + 2].rank ) ) {
+        threes[ { temp[i], temp[i + 1], temp[i +2] } ] = true;
+      }
+    }
+
+    // 4 seq
+    for( int i = 0; i < 9; i++ ) {
+      if( ( temp[i].suit == temp[i + 1].suit && temp[i].suit == temp[i + 2].suit && temp[i].suit == temp[i + 3].suit ) &&
+          ( temp[i].rank + 1 == temp[i + 1].rank && temp[i].rank + 2 == temp[i + 2].rank && temp[i].rank + 3 == temp[i + 3].rank ) ) {
+        fours[ { temp[i], temp[i + 1], temp[i +2], temp[i + 3] } ] = true;
+      }
+    }
+
+    // check
+    List<Set<PlayingCard>> curr = [], foursKeys = fours.keys.toList(), threesKeys = threes.keys.toList();
+
+    for( int a = 0; a < foursKeys.length; a++ ) {
+      curr.add(foursKeys[a]);
+
+      for( int i = 0; i < threesKeys.length; i++ ) {
+        if( !curr.any( (inUse) => inUse.any( threesKeys[i].contains ) ) ) {
+          curr.add( threesKeys[i] );
+
+          for( int j = i + 1; j < threesKeys.length; j++ ) {
+            if( !curr.any( (inUse) => inUse.any( threesKeys[j].contains ) ) ) {
+              curr.add( threesKeys[j] );
+
+              for( int k = j + 1; k < threesKeys.length; k++ ) {
+                if( !curr.any( (inUse) => inUse.any( threesKeys[k].contains ) ) ) {
+                  curr.add( threesKeys[k] );
+                  if( curr.any( (inUse) => ( threes[inUse] ?? false ) || ( fours[inUse] ?? false ) ) ) {
+                    return true;
+                  }
+                  curr.remove( threesKeys[k] );
+                }
+              }
+              curr.remove( threesKeys[j] );
+            }
+          }
+          curr.remove( threesKeys[i] );
+        }
+      }
+      curr.remove(foursKeys[a]);
+    }
+
+    return false;
+  }
 
   @override
   void initState() {
@@ -101,9 +169,9 @@ class _GameScreenState extends State<GameScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text( "Cards remaining: ${deck.length - curr}/52" ),
+              Text( "Cards remaining: ${deckSize - cardsUsed}/52" ),
+              Text( "Points: $points" ),
               Text( "Round: $round" ),
-              Text( "Score: $score" ),
               Text( "Seed: $seed" )
             ]
           ),
@@ -135,7 +203,7 @@ class _GameScreenState extends State<GameScreen> {
             children: [
               TextButton(
                 onPressed: () {
-                  if( deckSize - curr < selected.length ) {
+                  if( deckSize - cardsUsed < selected.length ) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         action: SnackBarAction( label: "OK", onPressed: () {} ),
@@ -148,11 +216,11 @@ class _GameScreenState extends State<GameScreen> {
                         hand.remove(card);
                       }
                       while( hand.length < handSize ) {
-                        hand.add( deck[curr] );
-                        curr++;
+                        hand.add( deck[cardsUsed] );
+                        cardsUsed++;
                       }
                       hand.sort((a, b) => a.rank.compareTo(b.rank));
-                      if( sortBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+                      if( sortedBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
                       selected.clear();
                     });
                   }
@@ -160,7 +228,7 @@ class _GameScreenState extends State<GameScreen> {
                 child: Text( "Discard" )
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () { print( isValidHand() ); },
                 child: Text( "Play hand" )
               ),
               TextButton(
@@ -168,16 +236,16 @@ class _GameScreenState extends State<GameScreen> {
                   deck.shuffle();
                   hand = deck.sublist(0, handSize);
                   hand.sort((a, b) => a.rank.compareTo(b.rank));
-                  if( sortBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+                  if( sortedBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
                   selected.clear();
-                  curr = 13;
+                  cardsUsed = 13;
                 }),
                 child: Text( "Reset" )
               ),
               TextButton(
                 onPressed: () => setState(() {
                   hand.sort((a, b) => a.rank.compareTo(b.rank));
-                  sortBySuit = false;
+                  sortedBySuit = false;
                 }),
                 child: Text( "Sort by rank" )
               ),
@@ -185,9 +253,29 @@ class _GameScreenState extends State<GameScreen> {
                 onPressed: () => setState(() {
                   hand.sort((a, b) => a.rank.compareTo(b.rank));
                   hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
-                  sortBySuit = true;
+                  sortedBySuit = true;
                 }),
                 child: Text( "Sort by suit" )
+              ),
+              TextButton(
+                onPressed: () => setState(() {
+                  hand = [
+                    PlayingCard("assets/club/cardClubs_A.png", 1, Suit.club),
+                    PlayingCard("assets/club/cardClubs_2.png", 2, Suit.club),
+                    PlayingCard("assets/club/cardClubs_3.png", 3, Suit.club),
+                    PlayingCard("assets/club/cardClubs_4.png", 4, Suit.club),
+                    PlayingCard("assets/club/cardClubs_5.png", 5, Suit.club),
+                    PlayingCard("assets/club/cardClubs_6.png", 6, Suit.club),
+                    PlayingCard("assets/club/cardClubs_7.png", 7, Suit.club),
+                    PlayingCard("assets/club/cardClubs_8.png", 8, Suit.club),
+                    PlayingCard("assets/club/cardClubs_9.png", 9, Suit.club),
+                    PlayingCard("assets/club/cardClubs_10.png", 10, Suit.club),
+                    PlayingCard("assets/club/cardClubs_J.png", 11, Suit.club),
+                    PlayingCard("assets/club/cardClubs_Q.png", 12, Suit.club),
+                    PlayingCard("assets/club/cardClubs_K.png", 13, Suit.club)
+                  ];
+                }),
+                child: Text( "All clubs" )
               )
             ]
           )
