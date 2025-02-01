@@ -12,6 +12,6 @@ class PlayingCard {
 
   @override
   toString() {
-    return "Card($rank, $suit)";
+    return "Card( $rank, $suit )";
   }
 }

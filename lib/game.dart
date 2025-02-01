@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'objects/boosters.dart';
 import 'objects/cards.dart';
 
 class GameScreen extends StatefulWidget {
@@ -12,6 +13,18 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  final boosters = [
+    Booster( 50, "Plus 10 points for every club in hand.", () {}, "Club Sandwich", Rarity.common ),
+    Booster( 50, "Plus 10 points for every diamond in hand.", () {}, "Lab Diamond", Rarity.common ),
+    Booster( 50, "Plus 10 points for every heart in hand.", () {}, "Heart Rate", Rarity.common ),
+    Booster( 50, "Plus 10 points for every spade in hand.", () {}, "Spa Day", Rarity.common ),
+    Booster( 100, "Plus 20 points for every even number in hand.", () {}, "Good Evening", Rarity.legendary ),
+    Booster( 100, "Plus 25 points for every odd number in hand.", () {}, "Oddly Satisfying", Rarity.legendary ),
+    Booster( 100, "Plus 50 points for every face card in hand.", () {}, "Face Value", Rarity.legendary ),
+    Booster( 500, "Plus 100 points for every black card in hand.", () {}, "Black Hole", Rarity.mythical ),
+    Booster( 500, "Plus 100 points for every red card in hand.", () {}, "Red Carpet", Rarity.mythical ),
+    Booster( 1000, "Doubles points for every ace in hand.", () {}, "Aced It", Rarity.forbidden ),
+  ];
   int cardsUsed = 13;
   final deck = [
     PlayingCard("assets/club/cardClubs_A.png", 1, Suit.club),
@@ -76,6 +89,18 @@ class _GameScreenState extends State<GameScreen> {
   int seed = DateTime.now().microsecondsSinceEpoch;
   Set<PlayingCard> selected = {};
   bool sortedBySuit = false;
+  final thresholds = [
+    50,
+    100,
+    250,
+    500,
+    1000,
+    2500,
+    5000,
+    10000,
+    25000,
+    50000
+  ];
   late bool validHand;
 
   void resetDeck() {
@@ -84,6 +109,16 @@ class _GameScreenState extends State<GameScreen> {
     hand.sort((a, b) => a.rank.compareTo(b.rank));
     if( sortedBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
     validHand = isHandValid();
+  }
+
+  void resetGame() {
+    seed = DateTime.now().microsecondsSinceEpoch;
+    random = Random(seed);
+    resetDeck();
+    points = 0;
+    round = 1;
+    selected.clear();
+    cardsUsed = 13;
   }
 
   bool isHandValid() {
@@ -207,7 +242,8 @@ class _GameScreenState extends State<GameScreen> {
               Text( "Cards remaining: ${deckSize - cardsUsed}/52" ),
               Text( "Points: $points" ),
               Text( "Round: $round" ),
-              Text( "Seed: $seed" )
+              Text( "Seed: $seed" ),
+              Text( "Threshold: ${thresholds[round - 1]}" )
             ]
           ),
           Row(
@@ -271,8 +307,12 @@ class _GameScreenState extends State<GameScreen> {
                       for( PlayingCard card in hand ) {
                         points += card.rank;
                       }
-                      resetDeck();
-                      round++;
+                      if( points < thresholds[round - 1] ) {
+                        setState( () => resetGame() );
+                      } else {
+                        resetDeck();
+                        round++;
+                      }
                     });
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -287,15 +327,7 @@ class _GameScreenState extends State<GameScreen> {
                 child: Text( validHand ? "Play hand" : "Invalid hand" )
               ),
               TextButton(
-                onPressed: () => setState(() {
-                  seed = DateTime.now().microsecondsSinceEpoch;
-                  random = Random(seed);
-                  resetDeck();
-                  points = 0;
-                  round = 1;
-                  selected.clear();
-                  cardsUsed = 13;
-                }),
+                onPressed: () => setState( () => resetGame() ),
                 child: Text( "Reset" )
               ),
               TextButton(
@@ -335,6 +367,7 @@ class _GameScreenState extends State<GameScreen> {
                     PlayingCard("assets/club/cardClubs_Q.png", 12, Suit.club),
                     PlayingCard("assets/club/cardClubs_K.png", 13, Suit.club)
                   ];
+                  validHand = isHandValid();
                 }),
                 child: Text( "All clubs" )
               ),
@@ -355,8 +388,30 @@ class _GameScreenState extends State<GameScreen> {
                     PlayingCard("assets/spade/cardSpades_Q.png", 12, Suit.spade),
                     PlayingCard("assets/spade/cardSpades_K.png", 13, Suit.spade),
                   ];
+                  validHand = isHandValid();
                 }),
                 child: Text( "Best hand" )
+              ),
+               TextButton(
+                onPressed: () => setState(() {
+                  hand = [
+                    PlayingCard("assets/club/cardClubs_A.png", 1, Suit.club),
+                    PlayingCard("assets/club/cardClubs_2.png", 2, Suit.club),
+                    PlayingCard("assets/club/cardClubs_3.png", 3, Suit.club),
+                    PlayingCard("assets/club/cardClubs_4.png", 4, Suit.club),
+                    PlayingCard("assets/diamond/cardDiamonds_A.png", 1, Suit.diamond),
+                    PlayingCard("assets/diamond/cardDiamonds_2.png", 2, Suit.diamond),
+                    PlayingCard("assets/diamond/cardDiamonds_3.png", 3, Suit.diamond),
+                    PlayingCard("assets/heart/cardHearts_A.png", 1, Suit.heart),
+                    PlayingCard("assets/heart/cardHearts_2.png", 2, Suit.heart),
+                    PlayingCard("assets/heart/cardHearts_3.png", 3, Suit.heart),
+                    PlayingCard("assets/spade/cardSpades_A.png", 1, Suit.spade),
+                    PlayingCard("assets/spade/cardSpades_2.png", 2, Suit.spade),
+                    PlayingCard("assets/spade/cardSpades_3.png", 3, Suit.spade),
+                  ];
+                  validHand = isHandValid();
+                }),
+                child: Text( "Worst hand" )
               )
             ],
           )
