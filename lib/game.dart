@@ -75,6 +75,13 @@ class _GameScreenState extends State<GameScreen> {
   Set<PlayingCard> selected = {};
   bool sortedBySuit = false;
 
+  void resetDeck() {
+    deck.shuffle( random );
+    hand = deck.sublist(0, handSize);
+    hand.sort((a, b) => a.rank.compareTo(b.rank));
+    if( sortedBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+  }
+
   bool isValidHand() {
     Map<Set<PlayingCard>, bool> threes = {}, fours = {};
     List<PlayingCard> temp = List.from(hand);
@@ -164,7 +171,7 @@ class _GameScreenState extends State<GameScreen> {
 
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -207,6 +214,7 @@ class _GameScreenState extends State<GameScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         action: SnackBarAction( label: "OK", onPressed: () {} ),
+                        behavior: SnackBarBehavior.floating,
                         content: Text( "Not enough cards remaining in deck" )
                       )
                     );
@@ -228,15 +236,32 @@ class _GameScreenState extends State<GameScreen> {
                 child: Text( "Discard" )
               ),
               TextButton(
-                onPressed: () { print( isValidHand() ); },
+                onPressed: () {
+                  if( isValidHand() ) {
+                    setState(() {
+                      for( PlayingCard card in hand ) {
+                        points += card.rank;
+                      }
+                      resetDeck();
+                      round++;
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        action: SnackBarAction( label: "OK", onPressed: () {} ),
+                        behavior: SnackBarBehavior.floating,
+                        content: Text( "Invalid hand" )
+                      )
+                    );
+                  }
+                },
                 child: Text( "Play hand" )
               ),
               TextButton(
                 onPressed: () => setState(() {
-                  deck.shuffle();
-                  hand = deck.sublist(0, handSize);
-                  hand.sort((a, b) => a.rank.compareTo(b.rank));
-                  if( sortedBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+                  resetDeck();
+                  points = 0;
+                  round = 1;
                   selected.clear();
                   cardsUsed = 13;
                 }),
