@@ -38,19 +38,6 @@ class _GameScreenState extends State<GameScreen> {
     PlayingCard("assets/diamond/cardDiamonds_J.png", 11, Suit.diamond),
     PlayingCard("assets/diamond/cardDiamonds_Q.png", 12, Suit.diamond),
     PlayingCard("assets/diamond/cardDiamonds_K.png", 13, Suit.diamond),
-    PlayingCard("assets/spade/cardSpades_A.png", 1, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_2.png", 2, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_3.png", 3, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_4.png", 4, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_5.png", 5, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_6.png", 6, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_7.png", 7, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_8.png", 8, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_9.png", 9, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_10.png", 10, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_J.png", 11, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_Q.png", 12, Suit.spade),
-    PlayingCard("assets/spade/cardSpades_K.png", 13, Suit.spade),
     PlayingCard("assets/heart/cardHearts_A.png", 1, Suit.heart),
     PlayingCard("assets/heart/cardHearts_2.png", 2, Suit.heart),
     PlayingCard("assets/heart/cardHearts_3.png", 3, Suit.heart),
@@ -64,6 +51,19 @@ class _GameScreenState extends State<GameScreen> {
     PlayingCard("assets/heart/cardHearts_J.png", 11, Suit.heart),
     PlayingCard("assets/heart/cardHearts_Q.png", 12, Suit.heart),
     PlayingCard("assets/heart/cardHearts_K.png", 13, Suit.heart),
+    PlayingCard("assets/spade/cardSpades_A.png", 1, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_2.png", 2, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_3.png", 3, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_4.png", 4, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_5.png", 5, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_6.png", 6, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_7.png", 7, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_8.png", 8, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_9.png", 9, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_10.png", 10, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_J.png", 11, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_Q.png", 12, Suit.spade),
+    PlayingCard("assets/spade/cardSpades_K.png", 13, Suit.spade),
   ];
   final deckSize = 52;
   late List<PlayingCard> hand;
@@ -170,6 +170,20 @@ class _GameScreenState extends State<GameScreen> {
   Widget build( BuildContext context ) {
 
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon( Icons.person )
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: Icon( Icons.settings )
+          )
+        ],
+        centerTitle: true,
+        title: Text( "Remi Manado" )
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -259,6 +273,8 @@ class _GameScreenState extends State<GameScreen> {
               ),
               TextButton(
                 onPressed: () => setState(() {
+                  seed = DateTime.now().microsecondsSinceEpoch;
+                  random = Random(seed);
                   resetDeck();
                   points = 0;
                   round = 1;
@@ -282,6 +298,11 @@ class _GameScreenState extends State<GameScreen> {
                 }),
                 child: Text( "Sort by suit" )
               ),
+            ]
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               TextButton(
                 onPressed: () => setState(() {
                   hand = [
@@ -301,8 +322,28 @@ class _GameScreenState extends State<GameScreen> {
                   ];
                 }),
                 child: Text( "All clubs" )
+              ),
+              TextButton(
+                onPressed: () => setState(() {
+                  hand = [
+                    PlayingCard("assets/club/cardClubs_10.png", 10, Suit.club),
+                    PlayingCard("assets/club/cardClubs_J.png", 11, Suit.club),
+                    PlayingCard("assets/club/cardClubs_Q.png", 12, Suit.club),
+                    PlayingCard("assets/club/cardClubs_K.png", 13, Suit.club),
+                    PlayingCard("assets/diamond/cardDiamonds_J.png", 11, Suit.diamond),
+                    PlayingCard("assets/diamond/cardDiamonds_Q.png", 12, Suit.diamond),
+                    PlayingCard("assets/diamond/cardDiamonds_K.png", 13, Suit.diamond),
+                    PlayingCard("assets/heart/cardHearts_J.png", 11, Suit.heart),
+                    PlayingCard("assets/heart/cardHearts_Q.png", 12, Suit.heart),
+                    PlayingCard("assets/heart/cardHearts_K.png", 13, Suit.heart),
+                    PlayingCard("assets/spade/cardSpades_J.png", 11, Suit.spade),
+                    PlayingCard("assets/spade/cardSpades_Q.png", 12, Suit.spade),
+                    PlayingCard("assets/spade/cardSpades_K.png", 13, Suit.spade),
+                  ];
+                }),
+                child: Text( "Best hand" )
               )
-            ]
+            ],
           )
         ],
       )
