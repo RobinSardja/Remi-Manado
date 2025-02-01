@@ -9,4 +9,9 @@ class PlayingCard {
   final Suit suit;
 
   const PlayingCard( this.face, this.rank, this.suit );
+
+  @override
+  toString() {
+    return "Card($rank, $suit)";
+  }
 }

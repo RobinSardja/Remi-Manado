@@ -82,14 +82,14 @@ class _GameScreenState extends State<GameScreen> {
     temp.sort((a, b) => a.rank.compareTo(b.rank));
 
     // 3 set
-    for( int i = 0; i < 10; i++ ) {
+    for( int i = 0; i < 11; i++ ) {
       if( temp[i].rank == temp[i + 1].rank && temp[i].rank == temp[i + 2].rank ) {
         threes[ { temp[i], temp[i + 1], temp[i +2] } ] = false;
       }
     }
 
     // 4 set
-    for( int i = 0; i < 9; i++ ) {
+    for( int i = 0; i < 10; i++ ) {
       if( temp[i].rank == temp[i + 1].rank && temp[i].rank == temp[i + 2].rank && temp[i].rank == temp[i + 3].rank ) {
         fours[ { temp[i], temp[i + 1], temp[i +2], temp[i + 3] } ] = false;
         i += 4;
@@ -99,7 +99,7 @@ class _GameScreenState extends State<GameScreen> {
     temp.sort((a, b) => a.suit.index.compareTo(b.suit.index));
 
     // 3 seq
-    for( int i = 0; i < 10; i++ ) {
+    for( int i = 0; i < 11; i++ ) {
       if( ( temp[i].suit == temp[i + 1].suit && temp[i].suit == temp[i + 2].suit ) &&
           ( temp[i].rank + 1 == temp[i + 1].rank && temp[i].rank + 2 == temp[i + 2].rank ) ) {
         threes[ { temp[i], temp[i + 1], temp[i +2] } ] = true;
@@ -107,7 +107,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     // 4 seq
-    for( int i = 0; i < 9; i++ ) {
+    for( int i = 0; i < 10; i++ ) {
       if( ( temp[i].suit == temp[i + 1].suit && temp[i].suit == temp[i + 2].suit && temp[i].suit == temp[i + 3].suit ) &&
           ( temp[i].rank + 1 == temp[i + 1].rank && temp[i].rank + 2 == temp[i + 2].rank && temp[i].rank + 3 == temp[i + 3].rank ) ) {
         fours[ { temp[i], temp[i + 1], temp[i +2], temp[i + 3] } ] = true;
