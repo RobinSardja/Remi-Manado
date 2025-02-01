@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-
+import 'dart:math';
 import 'objects/cards.dart';
+import 'package:flutter/material.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -65,17 +65,26 @@ class _GameScreenState extends State<GameScreen> {
     PlayingCard("assets/heart/cardHearts_Q.png", 12, Suit.heart),
     PlayingCard("assets/heart/cardHearts_K.png", 13, Suit.heart),
   ];
-  int deckSize = 52;
+  final deckSize = 52;
   late List<PlayingCard> hand;
   final handSize = 13;
+  late Random random;
   int round = 1;
   int score = 0;
+  int seed = DateTime.now().microsecondsSinceEpoch;
   Set<PlayingCard> selected = {};
   bool sortBySuit = false;
 
+  // bool isValidHand() {
+  //   List<Set<PlayingCard>> seq3, seq4, set3, set4;
+
+  //   return false;
+  // }
+
   @override
   void initState() {
-    deck.shuffle();
+    random = Random(seed);
+    deck.shuffle( random );
     hand = deck.sublist(0, handSize);
     hand.sort((a, b) => a.rank.compareTo(b.rank));
     
@@ -95,13 +104,14 @@ class _GameScreenState extends State<GameScreen> {
               Text( "Cards remaining: ${deck.length - curr}/52" ),
               Text( "Round: $round" ),
               Text( "Score: $score" ),
+              Text( "Seed: $seed" )
             ]
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: hand.map(
               (card) => SizedBox(
-                width: MediaQuery.of(context).size.width / (handSize + 1),
+                width: MediaQuery.of(context).size.width / handSize,
                 child: GestureDetector(
                   onTap: () => setState(() {
                     if( selected.contains(card) ) {
@@ -124,7 +134,7 @@ class _GameScreenState extends State<GameScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
-                onPressed: () => setState(() {
+                onPressed: () {
                   if( deckSize - curr < selected.length ) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -133,18 +143,20 @@ class _GameScreenState extends State<GameScreen> {
                       )
                     );
                   } else {
-                    for( PlayingCard card in selected ) {
-                      hand.remove(card);
-                    }
-                    while( hand.length < handSize ) {
-                      hand.add( deck[curr] );
-                      curr++;
-                    }
-                    hand.sort((a, b) => a.rank.compareTo(b.rank));
-                    if( sortBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
-                    selected.clear();
+                    setState(() {
+                      for( PlayingCard card in selected ) {
+                        hand.remove(card);
+                      }
+                      while( hand.length < handSize ) {
+                        hand.add( deck[curr] );
+                        curr++;
+                      }
+                      hand.sort((a, b) => a.rank.compareTo(b.rank));
+                      if( sortBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+                      selected.clear();
+                    });
                   }
-                }),
+                },
                 child: Text( "Discard" )
               ),
               TextButton(
