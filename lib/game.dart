@@ -1,6 +1,8 @@
 import 'dart:math';
-import 'objects/cards.dart';
+
 import 'package:flutter/material.dart';
+
+import 'objects/cards.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -74,15 +76,17 @@ class _GameScreenState extends State<GameScreen> {
   int seed = DateTime.now().microsecondsSinceEpoch;
   Set<PlayingCard> selected = {};
   bool sortedBySuit = false;
+  late bool validHand;
 
   void resetDeck() {
     deck.shuffle( random );
     hand = deck.sublist(0, handSize);
     hand.sort((a, b) => a.rank.compareTo(b.rank));
     if( sortedBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+    validHand = isHandValid();
   }
 
-  bool isValidHand() {
+  bool isHandValid() {
     Map<Set<PlayingCard>, bool> threes = {}, fours = {};
     List<PlayingCard> temp = List.from(hand);
 
@@ -90,14 +94,17 @@ class _GameScreenState extends State<GameScreen> {
 
     // 3 set
     for( int i = 0; i < 11; i++ ) {
-      if( temp[i].rank == temp[i + 1].rank && temp[i].rank == temp[i + 2].rank ) {
+      if( temp[i].rank == temp[i + 1].rank &&
+          temp[i].rank == temp[i + 2].rank ) {
         threes[ { temp[i], temp[i + 1], temp[i +2] } ] = false;
       }
     }
 
     // 4 set
     for( int i = 0; i < 10; i++ ) {
-      if( temp[i].rank == temp[i + 1].rank && temp[i].rank == temp[i + 2].rank && temp[i].rank == temp[i + 3].rank ) {
+      if( temp[i].rank == temp[i + 1].rank &&
+          temp[i].rank == temp[i + 2].rank &&
+          temp[i].rank == temp[i + 3].rank ) {
         fours[ { temp[i], temp[i + 1], temp[i +2], temp[i + 3] } ] = false;
         i += 4;
       }
@@ -107,16 +114,22 @@ class _GameScreenState extends State<GameScreen> {
 
     // 3 seq
     for( int i = 0; i < 11; i++ ) {
-      if( ( temp[i].suit == temp[i + 1].suit && temp[i].suit == temp[i + 2].suit ) &&
-          ( temp[i].rank + 1 == temp[i + 1].rank && temp[i].rank + 2 == temp[i + 2].rank ) ) {
+      if( ( temp[i].suit == temp[i + 1].suit &&
+            temp[i].suit == temp[i + 2].suit ) &&
+          ( temp[i].rank + 1 == temp[i + 1].rank &&
+            temp[i].rank + 2 == temp[i + 2].rank ) ) {
         threes[ { temp[i], temp[i + 1], temp[i +2] } ] = true;
       }
     }
 
     // 4 seq
     for( int i = 0; i < 10; i++ ) {
-      if( ( temp[i].suit == temp[i + 1].suit && temp[i].suit == temp[i + 2].suit && temp[i].suit == temp[i + 3].suit ) &&
-          ( temp[i].rank + 1 == temp[i + 1].rank && temp[i].rank + 2 == temp[i + 2].rank && temp[i].rank + 3 == temp[i + 3].rank ) ) {
+      if( ( temp[i].suit == temp[i + 1].suit &&
+            temp[i].suit == temp[i + 2].suit &&
+            temp[i].suit == temp[i + 3].suit ) &&
+          ( temp[i].rank + 1 == temp[i + 1].rank &&
+            temp[i].rank + 2 == temp[i + 2].rank &&
+            temp[i].rank + 3 == temp[i + 3].rank ) ) {
         fours[ { temp[i], temp[i + 1], temp[i +2], temp[i + 3] } ] = true;
       }
     }
@@ -162,6 +175,7 @@ class _GameScreenState extends State<GameScreen> {
     deck.shuffle( random );
     hand = deck.sublist(0, handSize);
     hand.sort((a, b) => a.rank.compareTo(b.rank));
+    validHand = isHandValid();
     
     super.initState();
   }
@@ -245,13 +259,14 @@ class _GameScreenState extends State<GameScreen> {
                       if( sortedBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
                       selected.clear();
                     });
+                    validHand = isHandValid();
                   }
                 },
                 child: Text( "Discard" )
               ),
               TextButton(
                 onPressed: () {
-                  if( isValidHand() ) {
+                  if( validHand ) {
                     setState(() {
                       for( PlayingCard card in hand ) {
                         points += card.rank;
@@ -269,7 +284,7 @@ class _GameScreenState extends State<GameScreen> {
                     );
                   }
                 },
-                child: Text( "Play hand" )
+                child: Text( validHand ? "Play hand" : "Invalid hand" )
               ),
               TextButton(
                 onPressed: () => setState(() {
