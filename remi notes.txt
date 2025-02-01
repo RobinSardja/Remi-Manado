@@ -1,1 +1,0 @@
-play decks until out of hands
