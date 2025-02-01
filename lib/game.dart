@@ -68,97 +68,116 @@ class _GameScreenState extends State<GameScreen> {
   int deckSize = 52;
   late List<PlayingCard> hand;
   final handSize = 13;
-  final offset = -50.0;
   int round = 1;
   int score = 0;
   Set<PlayingCard> selected = {};
+  bool sortBySuit = false;
 
   @override
   void initState() {
     deck.shuffle();
     hand = deck.sublist(0, handSize);
+    hand.sort((a, b) => a.rank.compareTo(b.rank));
     
     super.initState();
   }
 
   @override
   Widget build( BuildContext context ) {
+
     return Scaffold(
-      body: Stack(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Column(
-              children: [
-                Text( "Cards remaining: ${deck.length - curr}/52" ),
-                Text( "Round: $round" ),
-                Text( "Score: $score" ),
-              ]
-            )
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: hand.map(
-                  (card) => SizedBox(
-                    width: MediaQuery.of(context).size.width / handSize,
-                    child: GestureDetector(
-                      onTap: () => setState(() {
-                        if( selected.contains(card) ) {
-                          selected.remove(card);
-                        } else {
-                          selected.add(card);
-                        }
-                      }),
-                      child: Transform.translate(
-                        offset: Offset( 0, selected.contains(card) ? offset : 0 ),
-                        child: Image.network( card.face, fit: BoxFit.contain )
-                      )
-                    )
+              Text( "Cards remaining: ${deck.length - curr}/52" ),
+              Text( "Round: $round" ),
+              Text( "Score: $score" ),
+            ]
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: hand.map(
+              (card) => SizedBox(
+                width: MediaQuery.of(context).size.width / (handSize + 1),
+                child: GestureDetector(
+                  onTap: () => setState(() {
+                    if( selected.contains(card) ) {
+                      selected.remove(card);
+                    } else {
+                      selected.add(card);
+                    }
+                  }),
+                  child: Stack(
+                    children: [
+                      Image.network( card.face, fit: BoxFit.contain ),
+                      if( selected.contains(card) ) Positioned.fill( child: Container( color: Colors.black.withAlpha(100) ) )
+                    ]
                   )
-                ).toList()
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    onPressed: () => setState(() {
-                      if( deckSize - curr < selected.length ) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            action: SnackBarAction( label: "OK", onPressed: () {} ),
-                            content: Text( "Not enough cards remaining in deck" )
-                          )
-                        );
-                      } else {
-                        for( PlayingCard card in selected ) {
-                          hand.remove(card);
-                        }
-                        while( hand.length < handSize ) {
-                          hand.add( deck[curr] );
-                          curr++;
-                        }
-                        selected.clear();
-                      }
-                    }),
-                    child: Text( "Discard" )
-                  ),
-                  TextButton(
-                    onPressed: () => setState(() => hand.sort((a, b) => a.rank.compareTo(b.rank))),
-                    child: Text( "Sort by rank" )
-                  ),
-                  TextButton(
-                    onPressed: () => setState(() {
-                      hand.sort((a, b) => a.rank.compareTo(b.rank));
-                      hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
-                    }),
-                    child: Text( "Sort by suit" )
-                  )
-                ]
+                )
               )
-            ],
+            ).toList()
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => setState(() {
+                  if( deckSize - curr < selected.length ) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        action: SnackBarAction( label: "OK", onPressed: () {} ),
+                        content: Text( "Not enough cards remaining in deck" )
+                      )
+                    );
+                  } else {
+                    for( PlayingCard card in selected ) {
+                      hand.remove(card);
+                    }
+                    while( hand.length < handSize ) {
+                      hand.add( deck[curr] );
+                      curr++;
+                    }
+                    hand.sort((a, b) => a.rank.compareTo(b.rank));
+                    if( sortBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+                    selected.clear();
+                  }
+                }),
+                child: Text( "Discard" )
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text( "Play hand" )
+              ),
+              TextButton(
+                onPressed: () => setState(() {
+                  deck.shuffle();
+                  hand = deck.sublist(0, handSize);
+                  hand.sort((a, b) => a.rank.compareTo(b.rank));
+                  if( sortBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+                  selected.clear();
+                  curr = 13;
+                }),
+                child: Text( "Reset" )
+              ),
+              TextButton(
+                onPressed: () => setState(() {
+                  hand.sort((a, b) => a.rank.compareTo(b.rank));
+                  sortBySuit = false;
+                }),
+                child: Text( "Sort by rank" )
+              ),
+              TextButton(
+                onPressed: () => setState(() {
+                  hand.sort((a, b) => a.rank.compareTo(b.rank));
+                  hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+                  sortBySuit = true;
+                }),
+                child: Text( "Sort by suit" )
+              )
+            ]
           )
         ],
       )

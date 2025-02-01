@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum Suit { club, diamond, spade, heart }
+enum Suit { club, diamond, heart, spade }
 
 @immutable
 class PlayingCard {
