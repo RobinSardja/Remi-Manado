@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 
-enum Rarity { common, legendary, mythical, forbidden }
-
 @immutable
-class Booster {
-  final int cost;
+class Power {
   final String description;
   final Function function;
   final String name;
-  final Rarity rarity;
 
-  const Booster( this.cost, this.description, this.function, this.name, this.rarity );
+  const Power( this.description, this.function, this.name );
 
   @override
   toString() {

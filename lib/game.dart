@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'objects/boosters.dart';
+import 'objects/powers.dart';
 import 'objects/cards.dart';
 
 class GameScreen extends StatefulWidget {
@@ -13,18 +13,6 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  final boosters = [
-    Booster( 50, "Plus 10 points for every club in hand.", () {}, "Club Sandwich", Rarity.common ),
-    Booster( 50, "Plus 10 points for every diamond in hand.", () {}, "Lab Diamond", Rarity.common ),
-    Booster( 50, "Plus 10 points for every heart in hand.", () {}, "Heart Rate", Rarity.common ),
-    Booster( 50, "Plus 10 points for every spade in hand.", () {}, "Spa Day", Rarity.common ),
-    Booster( 100, "Plus 20 points for every even number in hand.", () {}, "Good Evening", Rarity.legendary ),
-    Booster( 100, "Plus 25 points for every odd number in hand.", () {}, "Oddly Satisfying", Rarity.legendary ),
-    Booster( 100, "Plus 50 points for every face card in hand.", () {}, "Face Value", Rarity.legendary ),
-    Booster( 500, "Plus 100 points for every black card in hand.", () {}, "Black Hole", Rarity.mythical ),
-    Booster( 500, "Plus 100 points for every red card in hand.", () {}, "Red Carpet", Rarity.mythical ),
-    Booster( 1000, "Doubles points for every ace in hand.", () {}, "Aced It", Rarity.forbidden ),
-  ];
   int cardsUsed = 13;
   final deck = [
     PlayingCard("assets/club/cardClubs_A.png", 1, Suit.club),
@@ -84,6 +72,18 @@ class _GameScreenState extends State<GameScreen> {
   late List<PlayingCard> hand;
   final handSize = 13;
   int points = 0;
+  final powers = [
+    Power( "+1 point for every black in hand", () {}, "Blacks" ),
+    Power( "+1 point for every red in hand", () {}, "Reds" ),
+    Power( "+1 point for every club in hand", () {}, "Clubs" ),
+    Power( "+1 point for every diamond in hand", () {}, "Diamonds" ),
+    Power( "+1 point for every heart in hand", () {}, "Hearts" ),
+    Power( "+1 point for every spade in hand", () {}, "Spades" ),
+    Power( "+1 point for every odd number in hand", () {}, "Odds" ),
+    Power( "+1 point for every even number hand", () {}, "Evens" ),
+    Power( "+1 point for every face in hand", () {}, "Faces" ),
+    Power( "+1 point for every ace in hand", () {}, "Aces" )
+  ];
   late Random random;
   int round = 1;
   int seed = DateTime.now().microsecondsSinceEpoch;
