@@ -79,8 +79,8 @@ class _GameScreenState extends State<GameScreen> {
     Power( "+1 point for every diamond in hand", () {}, "Diamonds" ),
     Power( "+1 point for every heart in hand", () {}, "Hearts" ),
     Power( "+1 point for every spade in hand", () {}, "Spades" ),
-    Power( "+1 point for every odd number in hand", () {}, "Odds" ),
     Power( "+1 point for every even number hand", () {}, "Evens" ),
+    Power( "+1 point for every odd number in hand", () {}, "Odds" ),
     Power( "+1 point for every face in hand", () {}, "Faces" ),
     Power( "+1 point for every ace in hand", () {}, "Aces" )
   ];
@@ -89,18 +89,7 @@ class _GameScreenState extends State<GameScreen> {
   int seed = DateTime.now().microsecondsSinceEpoch;
   Set<PlayingCard> selected = {};
   bool sortedBySuit = false;
-  final thresholds = [
-    50,
-    100,
-    250,
-    500,
-    1000,
-    2500,
-    5000,
-    10000,
-    25000,
-    50000
-  ];
+  int threshold = 1;
   late bool validHand;
 
   void resetDeck() {
@@ -112,13 +101,14 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void resetGame() {
-    seed = DateTime.now().microsecondsSinceEpoch;
-    random = Random(seed);
-    resetDeck();
+    cardsUsed = 13;
     points = 0;
     round = 1;
     selected.clear();
-    cardsUsed = 13;
+    threshold = 1;
+    seed = DateTime.now().microsecondsSinceEpoch;
+    random = Random(seed);
+    resetDeck();
   }
 
   bool isHandValid() {
@@ -243,7 +233,7 @@ class _GameScreenState extends State<GameScreen> {
               Text( "Points: $points" ),
               Text( "Round: $round" ),
               Text( "Seed: $seed" ),
-              Text( "Threshold: ${thresholds[round - 1]}" )
+              Text( "Threshold: $threshold" )
             ]
           ),
           Row(
@@ -307,11 +297,12 @@ class _GameScreenState extends State<GameScreen> {
                       for( PlayingCard card in hand ) {
                         points += card.rank;
                       }
-                      if( points < thresholds[round - 1] ) {
+                      if( points < threshold ) {
                         setState( () => resetGame() );
                       } else {
                         resetDeck();
                         round++;
+                        threshold *= 2;
                       }
                     });
                   } else {
