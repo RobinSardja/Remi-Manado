@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'objects/powers.dart';
 import 'objects/cards.dart';
+import 'tutorial.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -216,7 +217,7 @@ class _GameScreenState extends State<GameScreen> {
             icon: Icon( Icons.person )
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => Navigator.of(context).push( MaterialPageRoute (builder: (context) => Tutorial() ) ),
             icon: Icon( Icons.settings )
           )
         ],

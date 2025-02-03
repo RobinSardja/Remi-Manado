@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'game.dart';
+import 'home.dart';
 
 void main() {
   runApp(const MainApp());
@@ -19,7 +19,7 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: GameScreen()
+      home: HomeScreen()
     );
   }
 }
