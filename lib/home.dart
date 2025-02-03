@@ -1,10 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 
 import 'game.dart';
 import 'settings.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final audioPlayer = AudioPlayer();
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    audioPlayer..setAsset( "music.ogg" )..setLoopMode( LoopMode.all );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +67,10 @@ class HomeScreen extends StatelessWidget {
               ),
               child: Text( "Tutorial" )
             ),
+            IconButton(
+              onPressed: () => audioPlayer.playing ? audioPlayer.pause() : audioPlayer.play(),
+              icon: Icon( Icons.music_note )
+            )
           ],
         )
       )
