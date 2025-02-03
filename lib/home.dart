@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'game.dart';
 import 'settings.dart';
-import 'tutorial.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,7 +23,26 @@ class HomeScreen extends StatelessWidget {
               child: Text( "Settings" )
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).push( MaterialPageRoute (builder: (context) => Tutorial() ) ),
+              onPressed: () => showDialog(
+                builder: (context) => AlertDialog(
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text( "OK" )
+                    )
+                  ],
+                  content: Text(
+                    "Remi Manado is a card game that I play with my family. You have 13 "
+                    "cards in your hand and you win by creating sets of cards with the "
+                    "same rank and sequences of consecutive cards of the same suit. All "
+                    "hands must include at least one sequence. Every card must be part "
+                    "of at least one set or sequence. Score as many points as possible "
+                    "by playing high ranks and using few discards."
+                  ),
+                  title: Text( "Tutorial" ),
+                ),
+                context: context
+              ),
               child: Text( "Tutorial" )
             ),
           ],

@@ -19,7 +19,8 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen()
+      home: HomeScreen(),
+      theme: ThemeData.dark(),
     );
   }
 }

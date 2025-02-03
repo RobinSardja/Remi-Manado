@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'objects/powers.dart';
 import 'objects/cards.dart';
-import 'tutorial.dart';
+import 'settings.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -217,7 +217,7 @@ class _GameScreenState extends State<GameScreen> {
             icon: Icon( Icons.person )
           ),
           IconButton(
-            onPressed: () => Navigator.of(context).push( MaterialPageRoute (builder: (context) => Tutorial() ) ),
+            onPressed: () => Navigator.of(context).push( MaterialPageRoute (builder: (context) => Settings() ) ),
             icon: Icon( Icons.settings )
           )
         ],
@@ -241,7 +241,7 @@ class _GameScreenState extends State<GameScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: hand.map(
               (card) => SizedBox(
-                width: MediaQuery.of(context).size.width / handSize,
+                width: MediaQuery.of(context).size.width / (handSize + 1),
                 child: GestureDetector(
                   onTap: () => setState(() {
                     if( selected.contains(card) ) {
@@ -253,7 +253,7 @@ class _GameScreenState extends State<GameScreen> {
                   child: Stack(
                     children: [
                       Image.network( card.face, fit: BoxFit.contain ),
-                      if( selected.contains(card) ) Positioned.fill( child: Container( color: Colors.black.withAlpha(100) ) )
+                      if( selected.contains(card) ) Positioned.fill( child: Container( color: Colors.blue.withAlpha(100) ) )
                     ]
                   )
                 )
