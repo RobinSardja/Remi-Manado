@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'objects/powers.dart';
 import 'objects/cards.dart';
 import 'settings.dart';
 
@@ -73,18 +72,6 @@ class _GameScreenState extends State<GameScreen> {
   late List<PlayingCard> hand;
   final handSize = 13;
   int points = 0;
-  final powers = [
-    Power( "+1 point for every black in hand", () {}, "Blacks" ),
-    Power( "+1 point for every red in hand", () {}, "Reds" ),
-    Power( "+1 point for every club in hand", () {}, "Clubs" ),
-    Power( "+1 point for every diamond in hand", () {}, "Diamonds" ),
-    Power( "+1 point for every heart in hand", () {}, "Hearts" ),
-    Power( "+1 point for every spade in hand", () {}, "Spades" ),
-    Power( "+1 point for every even number hand", () {}, "Evens" ),
-    Power( "+1 point for every odd number in hand", () {}, "Odds" ),
-    Power( "+1 point for every face in hand", () {}, "Faces" ),
-    Power( "+1 point for every ace in hand", () {}, "Aces" )
-  ];
   late Random random;
   int round = 1;
   int seed = DateTime.now().microsecondsSinceEpoch;
@@ -94,15 +81,17 @@ class _GameScreenState extends State<GameScreen> {
   late bool validHand;
 
   void resetDeck() {
+    cardsUsed = 13;
     deck.shuffle( random );
     hand = deck.sublist(0, handSize);
     hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
-    if( sortedBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+    if( sortedBySuit ) {
+      hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+    }
     validHand = isHandValid();
   }
 
   void resetGame() {
-    cardsUsed = 13;
     points = 0;
     round = 1;
     selected.clear();
@@ -161,35 +150,37 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     // check
-    List<Set<PlayingCard>> curr = [], foursKeys = fours.keys.toList(), threesKeys = threes.keys.toList();
+    List<Set<PlayingCard>> k3 = threes.keys.toList(), k4 = fours.keys.toList();
+    List<Set<PlayingCard>> curr = [];
 
-    for( int a = 0; a < foursKeys.length; a++ ) {
-      curr.add(foursKeys[a]);
+    for( int a = 0; a < k4.length; a++ ) {
+      curr.add(k4[a]);
 
-      for( int i = 0; i < threesKeys.length; i++ ) {
-        if( !curr.any( (inUse) => inUse.any( threesKeys[i].contains ) ) ) {
-          curr.add( threesKeys[i] );
+      for( int i = 0; i < k3.length; i++ ) {
+        if( !curr.any( (card) => card.any( k3[i].contains ) ) ) {
+          curr.add( k3[i] );
 
-          for( int j = i + 1; j < threesKeys.length; j++ ) {
-            if( !curr.any( (inUse) => inUse.any( threesKeys[j].contains ) ) ) {
-              curr.add( threesKeys[j] );
+          for( int j = i + 1; j < k3.length; j++ ) {
+            if( !curr.any( (card) => card.any( k3[j].contains ) ) ) {
+              curr.add( k3[j] );
 
-              for( int k = j + 1; k < threesKeys.length; k++ ) {
-                if( !curr.any( (inUse) => inUse.any( threesKeys[k].contains ) ) ) {
-                  curr.add( threesKeys[k] );
-                  if( curr.any( (inUse) => ( threes[inUse] ?? false ) || ( fours[inUse] ?? false ) ) ) {
+              for( int k = j + 1; k < k3.length; k++ ) {
+                if( !curr.any( (card) => card.any( k3[k].contains ) ) ) {
+                  curr.add( k3[k] );
+                  if( curr.any( (card) => ( threes[card] ?? false ) ||
+                                            ( fours[card] ?? false ) ) ) {
                     return true;
                   }
-                  curr.remove( threesKeys[k] );
+                  curr.remove( k3[k] );
                 }
               }
-              curr.remove( threesKeys[j] );
+              curr.remove( k3[j] );
             }
           }
-          curr.remove( threesKeys[i] );
+          curr.remove( k3[i] );
         }
       }
-      curr.remove(foursKeys[a]);
+      curr.remove(k4[a]);
     }
 
     return false;
@@ -217,7 +208,9 @@ class _GameScreenState extends State<GameScreen> {
             icon: Icon( Icons.person )
           ),
           IconButton(
-            onPressed: () => Navigator.of(context).push( MaterialPageRoute (builder: (context) => Settings() ) ),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute( builder: (context) => Settings() )
+            ),
             icon: Icon( Icons.settings )
           )
         ],
@@ -253,7 +246,12 @@ class _GameScreenState extends State<GameScreen> {
                   child: Stack(
                     children: [
                       Image.network( card.face, fit: BoxFit.contain ),
-                      if( selected.contains(card) ) Positioned.fill( child: Container( color: Colors.blue.withAlpha(100) ) )
+                      if( selected.contains(card) )
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors.blue.withAlpha(100)
+                          )
+                        )
                     ]
                   )
                 )
@@ -283,7 +281,11 @@ class _GameScreenState extends State<GameScreen> {
                         cardsUsed++;
                       }
                       hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
-                      if( sortedBySuit ) hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+                      if( sortedBySuit ) {
+                        hand.sort( (a, b) =>
+                          a.suit.index.compareTo( b.suit.index )
+                        );
+                      }
                       selected.clear();
                     });
                     validHand = isHandValid();

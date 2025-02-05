@@ -37,11 +37,15 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text( "Remi Manado" ),
             TextButton(
-              onPressed: () => Navigator.of(context).push( MaterialPageRoute (builder: (context) => GameScreen() ) ),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute( builder: (context) => GameScreen() )
+              ),
               child: Text( "New Game" )
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).push( MaterialPageRoute (builder: (context) => Settings() ) ),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute( builder: (context) => Settings() )
+              ),
               child: Text( "Settings" )
             ),
             TextButton(
@@ -54,12 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   ],
                   content: Text(
-                    "Remi Manado is a card game that I play with my family. You have 13 "
-                    "cards in your hand and you win by creating sets of cards with the "
-                    "same rank and sequences of consecutive cards of the same suit. All "
-                    "hands must include at least one sequence. Every card must be part "
-                    "of at least one set or sequence. Score as many points as possible "
-                    "by playing high ranks and using few discards."
+                    "Remi Manado is a card game that I play with my family. "
+                    "You have 13 cards in your hand and you win by creating "
+                    "sets of cards of the same rank or runs of sequential "
+                    "cards with the same suit. Every hand must include at "
+                    "least one run and every card must be part of a set or a "
+                    "run. Score as many points as possible by playing high "
+                    "ranks and using few discards as fast as you can."
                   ),
                   title: Text( "Tutorial" ),
                 ),
@@ -68,7 +73,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text( "Tutorial" )
             ),
             IconButton(
-              onPressed: () => audioPlayer.playing ? audioPlayer.pause() : audioPlayer.play(),
+              onPressed: () => audioPlayer.playing ?
+                audioPlayer.pause() : audioPlayer.play(),
               icon: Icon( Icons.music_note )
             )
           ],
