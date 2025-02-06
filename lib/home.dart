@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 audioPlayer.pause() : audioPlayer.play(),
               icon: Icon( Icons.music_note )
             )
-          ],
+          ]
         )
       )
     );

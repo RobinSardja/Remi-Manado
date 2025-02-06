@@ -20,7 +20,7 @@ class _MainAppState extends State<MainApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomeScreen(),
-      theme: ThemeData.dark(),
+      theme: ThemeData.dark()
     );
   }
 }

@@ -66,7 +66,7 @@ class _GameScreenState extends State<GameScreen> {
     PlayingCard("assets/spade/cardSpades_J.png", Rank.jack, Suit.spade, 10),
     PlayingCard("assets/spade/cardSpades_Q.png", Rank.queen, Suit.spade, 10),
     PlayingCard("assets/spade/cardSpades_K.png", Rank.king, Suit.spade, 10),
-    PlayingCard("assets/spade/cardSpades_A.png", Rank.ace, Suit.spade, 11),
+    PlayingCard("assets/spade/cardSpades_A.png", Rank.ace, Suit.spade, 11)
   ];
   final deckSize = 52;
   late List<PlayingCard> hand;
@@ -359,7 +359,7 @@ class _GameScreenState extends State<GameScreen> {
                     PlayingCard("assets/club/cardClubs_J.png", Rank.jack, Suit.club, 10),
                     PlayingCard("assets/club/cardClubs_Q.png", Rank.queen, Suit.club, 10),
                     PlayingCard("assets/club/cardClubs_K.png", Rank.king, Suit.club, 10),
-                    PlayingCard("assets/club/cardClubs_A.png", Rank.ace, Suit.club, 11),
+                    PlayingCard("assets/club/cardClubs_A.png", Rank.ace, Suit.club, 11)
                   ];
                   validHand = isHandValid();
                 }),
@@ -401,15 +401,15 @@ class _GameScreenState extends State<GameScreen> {
                     PlayingCard("assets/heart/cardHearts_4.png", Rank.four, Suit.heart, 4),
                     PlayingCard("assets/spade/cardSpades_2.png", Rank.two, Suit.spade, 2),
                     PlayingCard("assets/spade/cardSpades_3.png", Rank.three, Suit.spade, 3),
-                    PlayingCard("assets/spade/cardSpades_4.png", Rank.four, Suit.spade, 4),
+                    PlayingCard("assets/spade/cardSpades_4.png", Rank.four, Suit.spade, 4)
                   ];
                   validHand = isHandValid();
                 }),
                 child: Text( "Worst hand" )
               )
-            ],
+            ]
           )
-        ],
+        ]
       )
     );
   }
