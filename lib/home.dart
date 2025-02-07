@@ -38,13 +38,21 @@ class _HomeScreenState extends State<HomeScreen> {
             Text( "Remi Manado" ),
             TextButton(
               onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute( builder: (context) => GameScreen() )
+                MaterialPageRoute(
+                  builder: (context) => GameScreen(
+                    audioPlayer: audioPlayer,
+                  )
+                )
               ),
               child: Text( "New Game" )
             ),
             TextButton(
               onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute( builder: (context) => Settings() )
+                MaterialPageRoute(
+                  builder: (context) => Settings(
+                    audioPlayer: audioPlayer
+                  )
+                )
               ),
               child: Text( "Settings" )
             ),
@@ -72,11 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Text( "Tutorial" )
             ),
-            IconButton(
-              onPressed: () => audioPlayer.playing ?
-                audioPlayer.pause() : audioPlayer.play(),
-              icon: Icon( Icons.music_note )
-            )
           ]
         )
       )

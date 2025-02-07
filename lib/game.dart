@@ -1,12 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 
 import 'objects/cards.dart';
 import 'settings.dart';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
+  const GameScreen({
+    super.key,
+    required this.audioPlayer
+  });
+
+  final AudioPlayer audioPlayer;
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -209,7 +215,11 @@ class _GameScreenState extends State<GameScreen> {
           ),
           IconButton(
             onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute( builder: (context) => Settings() )
+              MaterialPageRoute(
+                builder: (context) => Settings(
+                  audioPlayer: widget.audioPlayer 
+                )
+              )
             ),
             icon: Icon( Icons.settings )
           )
