@@ -193,10 +193,6 @@ class _GameScreenState extends State<GameScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: Icon( Icons.person )
-          ),
-          IconButton(
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => Settings(
