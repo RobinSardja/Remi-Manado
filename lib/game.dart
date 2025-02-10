@@ -80,15 +80,17 @@ class _GameScreenState extends State<GameScreen> {
   late bool validHand;
 
   void resetGame() {
-    cardsUsed = 13;
-    deck.shuffle();
-    hand = deck.sublist(0, handSize);
-    hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
-    if( sortedBySuit ) {
-      hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
-    }
-    selected.clear();
-    validHand = isHandValid();
+    setState(() {
+      cardsUsed = 13;
+      deck.shuffle();
+      hand = deck.sublist(0, handSize);
+      hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
+      if( sortedBySuit ) {
+        hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+      }
+      selected.clear();
+      validHand = isHandValid();
+    });
   }
 
   bool isHandValid() {
@@ -287,7 +289,7 @@ class _GameScreenState extends State<GameScreen> {
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);
-                              setState( () => resetGame() );
+                              resetGame();
                             },
                             child: Text( "New Game" )
                           ),
@@ -316,7 +318,7 @@ class _GameScreenState extends State<GameScreen> {
                 child: Text( validHand ? "Play hand" : "Invalid hand" )
               ),
               TextButton(
-                onPressed: () => setState( () => resetGame() ),
+                onPressed: () => resetGame(),
                 child: Text( "Reset" )
               ),
               TextButton(
@@ -334,74 +336,6 @@ class _GameScreenState extends State<GameScreen> {
                 }),
                 child: Text( "Sort by suit" )
               ),
-            ]
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () => setState(() {
-                  hand = [
-                    PlayingCard("assets/club/cardClubs_2.png", Rank.two, Suit.club, 2),
-                    PlayingCard("assets/club/cardClubs_3.png", Rank.three, Suit.club, 3),
-                    PlayingCard("assets/club/cardClubs_4.png", Rank.four, Suit.club, 4),
-                    PlayingCard("assets/club/cardClubs_5.png", Rank.five, Suit.club, 5),
-                    PlayingCard("assets/club/cardClubs_6.png", Rank.six, Suit.club, 6),
-                    PlayingCard("assets/club/cardClubs_7.png", Rank.seven, Suit.club, 7),
-                    PlayingCard("assets/club/cardClubs_8.png", Rank.eight, Suit.club, 8),
-                    PlayingCard("assets/club/cardClubs_9.png", Rank.nine, Suit.club, 9),
-                    PlayingCard("assets/club/cardClubs_10.png", Rank.ten, Suit.club, 10),
-                    PlayingCard("assets/club/cardClubs_J.png", Rank.jack, Suit.club, 10),
-                    PlayingCard("assets/club/cardClubs_Q.png", Rank.queen, Suit.club, 10),
-                    PlayingCard("assets/club/cardClubs_K.png", Rank.king, Suit.club, 10),
-                    PlayingCard("assets/club/cardClubs_A.png", Rank.ace, Suit.club, 11)
-                  ];
-                  validHand = isHandValid();
-                }),
-                child: Text( "All clubs" )
-              ),
-              TextButton(
-                onPressed: () => setState(() {
-                  hand = [
-                    PlayingCard("assets/club/cardClubs_J.png", Rank.jack, Suit.club, 10),
-                    PlayingCard("assets/club/cardClubs_Q.png", Rank.queen, Suit.club, 10),
-                    PlayingCard("assets/club/cardClubs_K.png", Rank.king, Suit.club, 10),
-                    PlayingCard("assets/club/cardClubs_A.png", Rank.ace, Suit.club, 11),
-                    PlayingCard("assets/diamond/cardDiamonds_Q.png", Rank.queen, Suit.diamond, 10),
-                    PlayingCard("assets/diamond/cardDiamonds_K.png", Rank.king, Suit.diamond, 10),
-                    PlayingCard("assets/diamond/cardDiamonds_A.png", Rank.ace, Suit.diamond, 11),
-                    PlayingCard("assets/heart/cardHearts_Q.png", Rank.queen, Suit.heart, 10),
-                    PlayingCard("assets/heart/cardHearts_K.png", Rank.king, Suit.heart, 10),
-                    PlayingCard("assets/heart/cardHearts_A.png", Rank.ace, Suit.heart, 11),
-                    PlayingCard("assets/spade/cardSpades_Q.png", Rank.queen, Suit.spade, 10),
-                    PlayingCard("assets/spade/cardSpades_K.png", Rank.king, Suit.spade, 10),
-                    PlayingCard("assets/spade/cardSpades_A.png", Rank.ace, Suit.spade, 11)
-                  ];
-                  validHand = isHandValid();
-                }),
-                child: Text( "Best hand" )
-              ),
-               TextButton(
-                onPressed: () => setState(() {
-                  hand = [
-                    PlayingCard("assets/club/cardClubs_2.png", Rank.two, Suit.club, 2),
-                    PlayingCard("assets/club/cardClubs_3.png", Rank.three, Suit.club, 3),
-                    PlayingCard("assets/club/cardClubs_4.png", Rank.four, Suit.club, 4),
-                    PlayingCard("assets/club/cardClubs_5.png", Rank.five, Suit.club, 5),
-                    PlayingCard("assets/diamond/cardDiamonds_2.png", Rank.two, Suit.diamond, 2),
-                    PlayingCard("assets/diamond/cardDiamonds_3.png", Rank.three, Suit.diamond, 3),
-                    PlayingCard("assets/diamond/cardDiamonds_4.png", Rank.four, Suit.diamond, 4),
-                    PlayingCard("assets/heart/cardHearts_2.png", Rank.two, Suit.heart, 2),
-                    PlayingCard("assets/heart/cardHearts_3.png", Rank.three, Suit.heart, 3),
-                    PlayingCard("assets/heart/cardHearts_4.png", Rank.four, Suit.heart, 4),
-                    PlayingCard("assets/spade/cardSpades_2.png", Rank.two, Suit.spade, 2),
-                    PlayingCard("assets/spade/cardSpades_3.png", Rank.three, Suit.spade, 3),
-                    PlayingCard("assets/spade/cardSpades_4.png", Rank.four, Suit.spade, 4)
-                  ];
-                  validHand = isHandValid();
-                }),
-                child: Text( "Worst hand" )
-              )
             ]
           )
         ]
