@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -77,34 +75,20 @@ class _GameScreenState extends State<GameScreen> {
   final deckSize = 52;
   late List<PlayingCard> hand;
   final handSize = 13;
-  int points = 0;
-  late Random random;
-  int round = 1;
-  int seed = DateTime.now().microsecondsSinceEpoch;
   Set<PlayingCard> selected = {};
   bool sortedBySuit = false;
-  int threshold = 1;
   late bool validHand;
 
-  void resetDeck() {
+  void resetGame() {
     cardsUsed = 13;
-    deck.shuffle( random );
+    deck.shuffle();
     hand = deck.sublist(0, handSize);
     hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
     if( sortedBySuit ) {
       hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
     }
-    validHand = isHandValid();
-  }
-
-  void resetGame() {
-    points = 0;
-    round = 1;
     selected.clear();
-    threshold = 1;
-    seed = DateTime.now().microsecondsSinceEpoch;
-    random = Random(seed);
-    resetDeck();
+    validHand = isHandValid();
   }
 
   bool isHandValid() {
@@ -194,8 +178,7 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   void initState() {
-    random = Random(seed);
-    deck.shuffle( random );
+    deck.shuffle();
     hand = deck.sublist(0, handSize);
     hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
     validHand = isHandValid();
@@ -234,10 +217,6 @@ class _GameScreenState extends State<GameScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text( "Cards remaining: ${deckSize - cardsUsed}/52" ),
-              Text( "Points: $points" ),
-              Text( "Round: $round" ),
-              Text( "Seed: $seed" ),
-              Text( "Threshold: $threshold" )
             ]
           ),
           Row(
@@ -306,18 +285,28 @@ class _GameScreenState extends State<GameScreen> {
               TextButton(
                 onPressed: () {
                   if( validHand ) {
-                    setState(() {
-                      for( PlayingCard card in hand ) {
-                        points += card.val;
-                      }
-                      if( points < threshold ) {
-                        setState( () => resetGame() );
-                      } else {
-                        resetDeck();
-                        round++;
-                        threshold *= 2;
-                      }
-                    });
+                    showDialog(
+                      builder: (context) => AlertDialog(
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              setState( () => resetGame() );
+                            },
+                            child: Text( "New Game" )
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            child: Text( "Main Menu" )
+                          )
+                        ],
+                        title: Text( "You win!" ),
+                      ),
+                      context: context
+                    );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
