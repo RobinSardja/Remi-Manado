@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context: context
               ),
               child: Text( "Tutorial" )
-            ),
+            )
           ]
         )
       )

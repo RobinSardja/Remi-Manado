@@ -31,7 +31,7 @@ class _SettingsState extends State<Settings> {
                                 widget.audioPlayer.play(),
               child: Text( "Play music" )
             )
-          ],
+          ]
         )
       )
     );
