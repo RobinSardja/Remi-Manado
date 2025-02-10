@@ -17,6 +17,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  
   int cardsUsed = 13;
   final deck = [
     PlayingCard("assets/club/cardClubs_2.png", Rank.two, Suit.club, 2),
@@ -78,20 +79,6 @@ class _GameScreenState extends State<GameScreen> {
   Set<PlayingCard> selected = {};
   bool sortedBySuit = false;
   late bool validHand;
-
-  void resetGame() {
-    setState(() {
-      cardsUsed = 13;
-      deck.shuffle();
-      hand = deck.sublist(0, handSize);
-      hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
-      if( sortedBySuit ) {
-        hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
-      }
-      selected.clear();
-      validHand = isHandValid();
-    });
-  }
 
   bool isHandValid() {
     Map<Set<PlayingCard>, bool> threes = {}, fours = {};
@@ -188,9 +175,22 @@ class _GameScreenState extends State<GameScreen> {
     super.initState();
   }
 
+  void resetGame() {
+    setState(() {
+      cardsUsed = 13;
+      deck.shuffle();
+      hand = deck.sublist(0, handSize);
+      hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
+      if( sortedBySuit ) {
+        hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+      }
+      selected.clear();
+      validHand = isHandValid();
+    });
+  }
+
   @override
   Widget build( BuildContext context ) {
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -335,7 +335,7 @@ class _GameScreenState extends State<GameScreen> {
                   sortedBySuit = true;
                 }),
                 child: Text( "Sort by suit" )
-              ),
+              )
             ]
           )
         ]
