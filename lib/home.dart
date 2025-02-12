@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 )
               ),
-              child: Text( "New Game" )
+              child: Text( "Singleplayer" )
             ),
             TextButton(
               onPressed: () => Navigator.of(context).push(

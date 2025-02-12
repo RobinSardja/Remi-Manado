@@ -76,7 +76,7 @@ class _GameScreenState extends State<GameScreen> {
   final deckSize = 52;
   late List<PlayingCard> hand;
   final handSize = 13;
-  Set<PlayingCard> selected = {};
+  PlayingCard? selected;
   bool sortedBySuit = false;
   late bool validHand;
 
@@ -147,7 +147,7 @@ class _GameScreenState extends State<GameScreen> {
                 if( !curr.any( (card) => card.any( k3[k].contains ) ) ) {
                   curr.add( k3[k] );
                   if( curr.any( (card) => ( threes[card] ?? false ) ||
-                                            ( fours[card] ?? false ) ) ) {
+                                          ( fours[card] ?? false ) ) ) {
                     return true;
                   }
                   curr.remove( k3[k] );
@@ -184,7 +184,7 @@ class _GameScreenState extends State<GameScreen> {
       if( sortedBySuit ) {
         hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
       }
-      selected.clear();
+      selected = null;
       validHand = isHandValid();
     });
   }
@@ -223,17 +223,13 @@ class _GameScreenState extends State<GameScreen> {
               (card) => SizedBox(
                 width: MediaQuery.of(context).size.width / (handSize + 1),
                 child: GestureDetector(
-                  onTap: () => setState(() {
-                    if( selected.contains(card) ) {
-                      selected.remove(card);
-                    } else {
-                      selected.add(card);
-                    }
-                  }),
+                  onTap: () => setState( () => card == selected ?
+                                                selected = null :
+                                                selected = card ),
                   child: Stack(
                     children: [
                       Image.network( card.face, fit: BoxFit.contain ),
-                      if( selected.contains(card) )
+                      if( selected == card )
                         Positioned.fill(
                           child: Container(
                             color: Colors.blue.withAlpha(100)
@@ -250,30 +246,28 @@ class _GameScreenState extends State<GameScreen> {
             children: [
               TextButton(
                 onPressed: () {
-                  if( deckSize - cardsUsed < selected.length ) {
+                  if( selected == null || deckSize - cardsUsed == 0 ) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         action: SnackBarAction( label: "OK", onPressed: () {} ),
                         behavior: SnackBarBehavior.floating,
-                        content: Text( "Not enough cards remaining in deck" )
+                        content: Text( selected == null ?
+                                        "Please select a card to discard" :
+                                        "No more cards remaining in deck" )
                       )
                     );
                   } else {
                     setState(() {
-                      for( PlayingCard card in selected ) {
-                        hand.remove(card);
-                      }
-                      while( hand.length < handSize ) {
-                        hand.add( deck[cardsUsed] );
-                        cardsUsed++;
-                      }
+                      hand.remove(selected);
+                      hand.add( deck[cardsUsed] );
+                      cardsUsed++;
                       hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
                       if( sortedBySuit ) {
                         hand.sort( (a, b) =>
                           a.suit.index.compareTo( b.suit.index )
                         );
                       }
-                      selected.clear();
+                      selected = null;
                     });
                     validHand = isHandValid();
                   }
