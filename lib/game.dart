@@ -214,38 +214,28 @@ class _GameScreenState extends State<GameScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              GestureDetector(
+                onTap: () {
+                  if( cardsUsed == 52 ) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        action: SnackBarAction( label: "OK", onPressed: () {} ),
+                        behavior: SnackBarBehavior.floating,
+                        content: Text( "No more cards remaining in deck" )
+                      )
+                    );
+                  } else {
+                    setState( () => cardsUsed++ );
+                  }
+                },
+                child: Image.network(
+                  "assets/cardBackRed.png",
+                  width: MediaQuery.of(context).size.width / (handSize + 1)
+                ),
+              ),
               Text( "Cards remaining: ${deckSize - cardsUsed}/52" ),
-            ]
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: hand.map(
-              (card) => SizedBox(
-                width: MediaQuery.of(context).size.width / (handSize + 1),
-                child: GestureDetector(
-                  onTap: () => setState( () => card == selected ?
-                                                selected = null :
-                                                selected = card ),
-                  child: Stack(
-                    children: [
-                      Image.network( card.face, fit: BoxFit.contain ),
-                      if( selected == card )
-                        Positioned.fill(
-                          child: Container(
-                            color: Colors.blue.withAlpha(100)
-                          )
-                        )
-                    ]
-                  )
-                )
-              )
-            ).toList()
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () {
+              GestureDetector(
+                onTap: () {
                   if( selected == null || deckSize - cardsUsed == 0 ) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -268,12 +258,44 @@ class _GameScreenState extends State<GameScreen> {
                         );
                       }
                       selected = null;
+                      validHand = isHandValid();
                     });
-                    validHand = isHandValid();
                   }
                 },
-                child: Text( "Discard" )
-              ),
+                child: Image.network(
+                  cardsUsed == 52 ? "assets/cardBackRed.png" : deck[cardsUsed].face,
+                  width: MediaQuery.of(context).size.width / (handSize + 1)
+                ),
+              )
+            ]
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: hand.map(
+              (card) => GestureDetector(
+                onTap: () => setState( () => card == selected ?
+                                              selected = null :
+                                              selected = card ),
+                child: Stack(
+                  children: [
+                    Image.network(
+                      card.face,
+                      width: MediaQuery.of(context).size.width / (handSize + 1)
+                    ),
+                    if( selected == card )
+                      Positioned.fill(
+                        child: Container(
+                          color: Colors.blue.withAlpha(100)
+                        )
+                      )
+                  ]
+                )
+              )
+            ).toList()
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               TextButton(
                 onPressed: () {
                   if( validHand ) {
