@@ -1,6 +1,6 @@
 # Remi Manado
 
-Balatro clone of a card game my family plays
+Online version of a card game my family plays
 
 Asset credits:
 
