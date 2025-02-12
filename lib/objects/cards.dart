@@ -28,9 +28,8 @@ class PlayingCard {
   final String face;
   final Rank rank;
   final Suit suit;
-  final int val;
 
-  const PlayingCard( this.face, this.rank, this.suit, this.val );
+  const PlayingCard( this.face, this.rank, this.suit );
 
   @override
   toString() {
