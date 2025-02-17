@@ -77,7 +77,7 @@ class _GameScreenState extends State<GameScreen> {
   late List<PlayingCard> hand;
   final handSize = 13;
   PlayingCard? selected;
-  bool sortedBySuit = false;
+  bool sortedByRank = true;
   late bool validHand;
 
   bool isHandValid() {
@@ -165,28 +165,40 @@ class _GameScreenState extends State<GameScreen> {
     return false;
   }
 
-  @override
-  void initState() {
-    deck.shuffle();
-    hand = deck.sublist(0, handSize);
-    hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
-    validHand = isHandValid();
-    
-    super.initState();
-  }
-
   void resetGame() {
     setState(() {
       cardsUsed = 13;
       deck.shuffle();
       hand = deck.sublist(0, handSize);
-      hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
-      if( sortedBySuit ) {
-        hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
-      }
+      sortedByRank ? sortByRank() : sortBySuit();
       selected = null;
       validHand = isHandValid();
     });
+  }
+
+  void sortByRank() {
+    setState(() {
+      hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
+      sortedByRank = true;
+    });
+  }
+
+  void sortBySuit() {
+    setState(() {
+      hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
+      hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
+      sortedByRank = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    deck.shuffle();
+    hand = deck.sublist(0, handSize);
+    sortByRank();
+    validHand = isHandValid();
   }
 
   @override
@@ -236,14 +248,16 @@ class _GameScreenState extends State<GameScreen> {
               Text( "Cards remaining: ${deckSize - cardsUsed}/52" ),
               GestureDetector(
                 onTap: () {
-                  if( selected == null || deckSize - cardsUsed == 0 ) {
+                  if( selected == null || cardsUsed == 52 ) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         action: SnackBarAction( label: "OK", onPressed: () {} ),
                         behavior: SnackBarBehavior.floating,
-                        content: Text( selected == null ?
-                                        "Please select a card to discard" :
-                                        "No more cards remaining in deck" )
+                        content: Text(
+                            selected == null ?
+                            "Please select a card to discard" :
+                            "No more cards remaining in deck"
+                          )
                       )
                     );
                   } else {
@@ -251,12 +265,7 @@ class _GameScreenState extends State<GameScreen> {
                       hand.remove(selected);
                       hand.add( deck[cardsUsed] );
                       cardsUsed++;
-                      hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
-                      if( sortedBySuit ) {
-                        hand.sort( (a, b) =>
-                          a.suit.index.compareTo( b.suit.index )
-                        );
-                      }
+                      sortedByRank ? sortByRank() : sortBySuit();
                       selected = null;
                       validHand = isHandValid();
                     });
@@ -273,9 +282,11 @@ class _GameScreenState extends State<GameScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: hand.map(
               (card) => GestureDetector(
-                onTap: () => setState( () => card == selected ?
-                                              selected = null :
-                                              selected = card ),
+                onTap: () => setState( () =>
+                  card == selected ?
+                  selected = null :
+                  selected = card
+                ),
                 child: Stack(
                   children: [
                     Image.network(
@@ -338,18 +349,11 @@ class _GameScreenState extends State<GameScreen> {
                 child: Text( "Reset" )
               ),
               TextButton(
-                onPressed: () => setState(() {
-                  hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
-                  sortedBySuit = false;
-                }),
+                onPressed: () => sortByRank(),
                 child: Text( "Sort by rank" )
               ),
               TextButton(
-                onPressed: () => setState(() {
-                  hand.sort((a, b) => a.rank.index.compareTo(b.rank.index));
-                  hand.sort((a, b) => a.suit.index.compareTo(b.suit.index));
-                  sortedBySuit = true;
-                }),
+                onPressed: () => sortBySuit(),
                 child: Text( "Sort by suit" )
               )
             ]

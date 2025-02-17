@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'home.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp( const MainApp() );
 }
 
 class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+  const MainApp({ super.key });
 
   @override
   State<MainApp> createState() => _MainAppState();

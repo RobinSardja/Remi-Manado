@@ -5,13 +5,14 @@ import 'game.dart';
 import 'settings.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({ super.key });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  
   final audioPlayer = AudioPlayer();
 
   @override

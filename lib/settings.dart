@@ -26,9 +26,10 @@ class _SettingsState extends State<Settings> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: () => widget.audioPlayer.playing ? 
-                                widget.audioPlayer.pause() :
-                                widget.audioPlayer.play(),
+              onPressed: () =>
+                widget.audioPlayer.playing ? 
+                widget.audioPlayer.pause() :
+                widget.audioPlayer.play(),
               child: Text( "Play music" )
             )
           ]
