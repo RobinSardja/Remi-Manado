@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
-import 'game.dart';
+import 'singleplayer.dart';
 import 'settings.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({ super.key });
+class Home extends StatefulWidget {
+  const Home({ super.key });
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<Home> createState() => _HomeState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeState extends State<Home> {
   
   final audioPlayer = AudioPlayer();
 
@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
             TextButton(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => GameScreen(
+                  builder: (context) => Singleplayer(
                     audioPlayer: audioPlayer,
                   )
                 )
