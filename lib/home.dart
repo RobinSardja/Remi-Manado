@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
-import 'singleplayer.dart';
+import 'multiplayer.dart';
 import 'settings.dart';
+import 'singleplayer.dart';
 
 class Home extends StatefulWidget {
   const Home({ super.key });
@@ -46,6 +47,16 @@ class _HomeState extends State<Home> {
                 )
               ),
               child: Text( "Singleplayer" )
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Multiplayer(
+                    audioPlayer: audioPlayer,
+                  )
+                )
+              ),
+              child: Text( "Multiplayer" )
             ),
             TextButton(
               onPressed: () => Navigator.of(context).push(
