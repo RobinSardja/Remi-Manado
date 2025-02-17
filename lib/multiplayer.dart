@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
+import 'settings.dart';
+
 class Multiplayer extends StatefulWidget {
   const Multiplayer({
     super.key,
@@ -18,6 +20,8 @@ class _MultiplayerState extends State<Multiplayer> {
 
   final codeController = TextEditingController();
   final nameController = TextEditingController();
+  Widget createGameChild = Text( "Create game" );
+  Widget joinGameChild = Text( "Join game" );
 
   Future<bool> doesGameExist( String code ) async {
     try {
@@ -32,67 +36,86 @@ class _MultiplayerState extends State<Multiplayer> {
     }
   }
 
-  void invalidInputDialog( String title ) {
-    showDialog(
-      builder: (context) => AlertDialog(
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text( "OK" )
-          )
-        ],
-        title: Text( title ),
-      ),
-      context: context
+  void invalidSnackBar( String content ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        action: SnackBarAction( label: "OK", onPressed: () {} ),
+        behavior: SnackBarBehavior.floating,
+        content: Text( content )
+      )
     );
   }
  
   @override
   Widget build( BuildContext context ) {
-    return AlertDialog(
-      actions: [
-        TextButton(
-          onPressed: () async {
-            if( codeController.text.isEmpty ) {
-              invalidInputDialog( "Please enter a code" );
-            } else if( nameController.text.isEmpty ) {
-              invalidInputDialog( "Please enter a name" );
-            } else if( await doesGameExist( codeController.text ) ) {
-              invalidInputDialog( "Game already exists with this code" );
-            }
-          },
-          child: Text( "Create game" )
-        ),
-        TextButton(
-          onPressed: () async {
-            if( codeController.text.isEmpty ) {
-              invalidInputDialog( "Please enter a code" );
-            } else if( nameController.text.isEmpty ) {
-              invalidInputDialog( "Please enter a name" );
-            } else if( !( await doesGameExist( codeController.text) ) ) {
-              invalidInputDialog( "No games exists with this code" );
-            }
-          },
-          child: Text( "Join game" )
-        )
-      ],
-      content: Column(
-        children: [
-          TextField(
-            controller: codeController,
-            decoration: InputDecoration(
-              hintText: "Code"
-            )
-          ),
-          TextField(
-            controller: nameController,
-            decoration: InputDecoration(
-              hintText: "Name"
-            )
+
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () => showDialog(
+              builder: (context) => GameSettings(
+                audioPlayer: widget.audioPlayer
+              ),
+              context: context
+            ),
+            icon: Icon( Icons.settings )
           )
-        ]
+        ],
+        centerTitle: true,
+        title: Text( "Remi Manado" )
       ),
-      title: Text( "Multiplayer" )
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: codeController,
+              decoration: InputDecoration(
+                hintText: "Code"
+              )
+            ),
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                hintText: "Name"
+              )
+            ),
+            TextButton(
+              onPressed: () async {
+                setState( () =>
+                  createGameChild = CircularProgressIndicator.adaptive()
+                );
+                if( codeController.text.isEmpty ) {
+                  invalidSnackBar( "Please enter a code" );
+                } else if( nameController.text.isEmpty ) {
+                  invalidSnackBar( "Please enter a name" );
+                } else if( await doesGameExist( codeController.text ) ) {
+                  invalidSnackBar( "Game already exists with this code" );
+                }
+                setState( () => createGameChild = Text( "Create game" ) );
+              },
+              child: createGameChild
+            ),
+            TextButton(
+              onPressed: () async {
+                setState( () =>
+                  joinGameChild = CircularProgressIndicator.adaptive()
+                );
+                if( codeController.text.isEmpty ) {
+                  invalidSnackBar( "Please enter a code" );
+                } else if( nameController.text.isEmpty ) {
+                  invalidSnackBar( "Please enter a name" );
+                } else if( !( await doesGameExist( codeController.text ) ) ) {
+                  invalidSnackBar( "No games exist with this code" );
+                }
+                setState( () => joinGameChild = Text( "Join game" ) );
+              },
+              child: joinGameChild
+            ),
+          ]
+        )
+      )
     );
   }
 }

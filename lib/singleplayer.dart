@@ -233,7 +233,7 @@ class _SingleplayerState extends State<Singleplayer> {
         actions: [
           IconButton(
             onPressed: () => showDialog(
-              builder: (context) => Settings(
+              builder: (context) => GameSettings(
                 audioPlayer: widget.audioPlayer
               ),
               context: context

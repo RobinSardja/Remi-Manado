@@ -49,17 +49,18 @@ class _HomeState extends State<Home> {
               child: Text( "Singleplayer" )
             ),
             TextButton(
-              onPressed: () => showDialog(
-                builder: (context) => Multiplayer(
-                  audioPlayer: audioPlayer,
-                ),
-                context: context
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Multiplayer(
+                    audioPlayer: audioPlayer,
+                  )
+                )
               ),
               child: Text( "Multiplayer" )
             ),
             TextButton(
               onPressed: () => showDialog(
-                builder: (context) => Settings(
+                builder: (context) => GameSettings(
                   audioPlayer: audioPlayer
                 ),
                 context: context

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
-class Settings extends StatefulWidget {
-  const Settings({
+class GameSettings extends StatefulWidget {
+  const GameSettings({
     required this.audioPlayer,
     super.key
   });
@@ -10,10 +10,10 @@ class Settings extends StatefulWidget {
   final AudioPlayer audioPlayer;
 
   @override
-  State<Settings> createState() => _SettingsState();
+  State<GameSettings> createState() => _GameSettingsState();
 }
 
-class _SettingsState extends State<Settings> {
+class _GameSettingsState extends State<GameSettings> {
 
   @override
   Widget build(BuildContext context) {
