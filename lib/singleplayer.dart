@@ -80,6 +80,31 @@ class _SingleplayerState extends State<Singleplayer> {
   bool sortedByRank = true;
   late bool validHand;
 
+  void endGameDialog( String title ) {
+    showDialog(
+      builder: (context) => AlertDialog(
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              resetGame();
+            },
+            child: Text( "New Game" )
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+            child: Text( "Main Menu" )
+          )
+        ],
+        title: Text( title ),
+      ),
+      context: context
+    ); 
+  }
+
   bool isHandValid() {
     Map<Set<PlayingCard>, bool> threes = {}, fours = {};
     List<PlayingCard> temp = List.from(hand);
@@ -228,13 +253,7 @@ class _SingleplayerState extends State<Singleplayer> {
               GestureDetector(
                 onTap: () {
                   if( cardsUsed == 52 ) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        action: SnackBarAction( label: "OK", onPressed: () {} ),
-                        behavior: SnackBarBehavior.floating,
-                        content: Text( "No more cards remaining in deck" )
-                      )
-                    );
+                    endGameDialog( "Out of cards" );
                   } else {
                     setState( () => cardsUsed++ );
                   }
@@ -247,16 +266,14 @@ class _SingleplayerState extends State<Singleplayer> {
               Text( "Cards remaining: ${deckSize - cardsUsed}/52" ),
               GestureDetector(
                 onTap: () {
-                  if( selected == null || cardsUsed == 52 ) {
+                  if( cardsUsed == 52 ) {
+                    endGameDialog( "Out of cards" );
+                  } else if( selected == null ) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         action: SnackBarAction( label: "OK", onPressed: () {} ),
                         behavior: SnackBarBehavior.floating,
-                        content: Text(
-                            selected == null ?
-                            "Please select a card to discard" :
-                            "No more cards remaining in deck"
-                          )
+                        content: Text( "Please select a card to discard" )
                       )
                     );
                   } else {
@@ -268,6 +285,9 @@ class _SingleplayerState extends State<Singleplayer> {
                       selected = null;
                       validHand = isHandValid();
                     });
+                    if( validHand ) {
+                      endGameDialog( "You win!" );
+                    }
                   }
                 },
                 child: Image.network(
@@ -306,43 +326,6 @@ class _SingleplayerState extends State<Singleplayer> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton(
-                onPressed: () {
-                  if( validHand ) {
-                    showDialog(
-                      builder: (context) => AlertDialog(
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              resetGame();
-                            },
-                            child: Text( "New Game" )
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                            child: Text( "Main Menu" )
-                          )
-                        ],
-                        title: Text( "You win!" ),
-                      ),
-                      context: context
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        action: SnackBarAction( label: "OK", onPressed: () {} ),
-                        behavior: SnackBarBehavior.floating,
-                        content: Text( "Invalid hand" )
-                      )
-                    );
-                  }
-                },
-                child: Text( validHand ? "Play hand" : "Invalid hand" )
-              ),
               TextButton(
                 onPressed: () => resetGame(),
                 child: Text( "Reset" )
