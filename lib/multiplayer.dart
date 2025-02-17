@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
-import 'settings.dart';
-
 class Multiplayer extends StatefulWidget {
   const Multiplayer({
     super.key,
@@ -19,24 +17,35 @@ class _MultiplayerState extends State<Multiplayer> {
  
   @override
   Widget build( BuildContext context ) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => Settings(
-                  audioPlayer: widget.audioPlayer 
-                )
-              )
-            ),
-            icon: Icon( Icons.settings )
+    return AlertDialog(
+      actions: [
+        TextButton(
+          onPressed: () {},
+          child: Text( "Create game" )
+        ),
+        TextButton(
+          onPressed: () {},
+          child: Text( "Join game" )
+        )
+      ],
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: "Name"
+            )
+          ),
+          TextField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: "Game code"
+            )
           )
-        ],
-        centerTitle: true,
-        title: Text( "Remi Manado" )
+        ]
       ),
-      body: Placeholder()
+      title: Text( "Multiplayer" )
     );
   }
 }

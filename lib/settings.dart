@@ -17,23 +17,18 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text( "Settings" )
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () =>
-                widget.audioPlayer.playing ? 
-                widget.audioPlayer.pause() :
-                widget.audioPlayer.play(),
-              child: Text( "Play music" )
-            )
-          ]
-        )
+    return AlertDialog(
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextButton(
+            onPressed: () =>
+              widget.audioPlayer.playing ? 
+              widget.audioPlayer.pause() :
+              widget.audioPlayer.play(),
+            child: Text( "Play music" )
+          )
+        ]
       )
     );
   }

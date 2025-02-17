@@ -207,12 +207,11 @@ class _SingleplayerState extends State<Singleplayer> {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => Settings(
-                  audioPlayer: widget.audioPlayer 
-                )
-              )
+            onPressed: () => showDialog(
+              builder: (context) => Settings(
+                audioPlayer: widget.audioPlayer
+              ),
+              context: context
             ),
             icon: Icon( Icons.settings )
           )
