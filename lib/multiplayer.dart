@@ -32,6 +32,7 @@ class _MultiplayerState extends State<Multiplayer> {
 
       return snapshot.exists;
     } catch(e) {
+      invalidSnackBar( "Error connecting to games" );
       return false;
     }
   }
