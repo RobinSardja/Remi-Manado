@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => Singleplayer(
-                    audioPlayer: audioPlayer,
+                    audioPlayer: audioPlayer
                   )
                 )
               ),
@@ -52,7 +52,7 @@ class _HomeState extends State<Home> {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => Multiplayer(
-                    audioPlayer: audioPlayer,
+                    audioPlayer: audioPlayer
                   )
                 )
               ),
@@ -85,7 +85,7 @@ class _HomeState extends State<Home> {
                     "run. Score as many points as possible by playing high "
                     "ranks and using few discards as fast as you can."
                   ),
-                  title: Text( "Tutorial" ),
+                  title: Text( "Tutorial" )
                 ),
                 context: context
               ),

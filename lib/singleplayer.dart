@@ -116,6 +116,7 @@ class _SingleplayerState extends State<Singleplayer> {
       if( temp[i].rank == temp[i + 1].rank &&
           temp[i].rank == temp[i + 2].rank ) {
         threes[ { temp[i], temp[i + 1], temp[i +2] } ] = false;
+        i += 3;
       }
     }
 
@@ -228,6 +229,7 @@ class _SingleplayerState extends State<Singleplayer> {
 
   @override
   Widget build( BuildContext context ) {
+
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -285,15 +287,13 @@ class _SingleplayerState extends State<Singleplayer> {
                       selected = null;
                       validHand = isHandValid();
                     });
-                    if( validHand ) {
-                      endGameDialog( "You win!" );
-                    }
+                    if( validHand ) endGameDialog( "You win!" );
                   }
                 },
                 child: Image.network(
                   cardsUsed == 52 ? "assets/cardBackRed.png" : deck[cardsUsed].face,
                   width: MediaQuery.of(context).size.width / (handSize + 1)
-                ),
+                )
               )
             ]
           ),
@@ -312,12 +312,11 @@ class _SingleplayerState extends State<Singleplayer> {
                       card.face,
                       width: MediaQuery.of(context).size.width / (handSize + 1)
                     ),
-                    if( selected == card )
-                      Positioned.fill(
-                        child: Container(
-                          color: Colors.blue.withAlpha(100)
-                        )
+                    if( selected == card ) Positioned.fill(
+                      child: Container(
+                        color: Colors.blue.withAlpha(100)
                       )
+                    )
                   ]
                 )
               )
